@@ -1,0 +1,59 @@
+---
+title: "Mallard Duck Movement"
+format: html
+author: Nicolas
+execute:
+  echo: false
+---
+
+```{r}
+#| message: false
+library(tidyverse)
+library(sf)
+```
+
+```{r}
+#| cache: true
+mallards <- readRDS("data/mallards.rds")
+```
+
+```{r}
+mallards |>
+  mutate(month = lubridate::month(timestamp, label = TRUE, abbr = TRUE)) |>
+  count(month, sort = TRUE)
+```
+
+```{r}
+mallards |>
+  filter(speed <= 30) |>
+  mutate(
+    season = case_when(
+      month(timestamp) %in% c(12, 1, 2) ~ "Winter",
+      month(timestamp) %in% c(3, 4, 5) ~ "Spring",
+      month(timestamp) %in% c(6, 7, 8) ~ "Summer",
+      TRUE ~ "Fall"
+    ),
+    month = month(timestamp, label = TRUE, abbr = TRUE)
+  ) |>
+  group_by(season, month) |>
+  summarise(mean_speed = mean(speed, na.rm = TRUE), .groups = "drop")
+```
+
+```{r}
+#| message: false
+library(ggridges)
+
+mallards |>
+  filter(speed <= 30) |>
+  mutate(month = factor(month(timestamp, label = TRUE, abbr = TRUE), levels = month.abb)) |>
+  ggplot(aes(x = speed, y = month, fill = after_stat(x))) +
+  geom_density_ridges_gradient(scale = 2, rel_min_height = 0.01) +
+  scale_fill_viridis_c(option = "C") +
+  labs(
+    x = "Speed",
+    y = "Month",
+    fill = "Speed",
+    title = "Distribution of GPS speeds by month"
+  ) +
+  theme_minimal()
+```

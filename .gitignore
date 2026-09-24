@@ -3,3 +3,4 @@ _site/
 *_files
 *_cache
 *.html
+data/mallards.rds
