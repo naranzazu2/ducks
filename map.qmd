@@ -14,24 +14,48 @@ library(sf)
 
 ```{r}
 #| cache: true
+#| message: false
+#| echo: false
 mallards <- readRDS("data/mallards.rds")
 ```
 
 ```{r}
 #| message: false
-world <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf")
+world <- rnaturalearth::ne_countries(continent = "Europe", scale = "medium", returnclass = "sf")
 
-mallards |>
+mallards_filtered <- mallards |>
   filter(lat >= 46, lat <= 55, long >= 7, long <= 25) |>
-  ggplot() +
-  geom_sf(data = world, fill = "lightgray", color = "gray50") +
-  geom_sf(aes(color = duck_id), size = 0.6, alpha = 0.7) +
-  coord_sf(xlim = c(7, 25), ylim = c(46, 55)) +
-  theme_minimal() +
+  mutate(duck_id = as.factor(duck_id))
+
+ggplot() +
+  geom_sf(data = world, fill = "#d9e5ea", color = "#7a8b94") +
+  geom_path(
+    data = mallards_filtered,
+    aes(x = long, y = lat, group = duck_id, color = duck_id),
+    linewidth = 0.55,
+    alpha = 0.8
+  ) +
+  geom_point(
+    data = mallards_filtered,
+    aes(x = long, y = lat, color = duck_id),
+    size = 1.2,
+    alpha = 0.8
+  ) +
+  coord_sf(xlim = c(7, 25), ylim = c(46, 55), expand = FALSE) +
+  scale_color_viridis_d(option = "plasma", end = 0.95) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "none",
+    panel.grid = element_blank(),
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    plot.title = element_text(size = 28, face = "bold"),
+    plot.subtitle = element_text(size = 16),
+    plot.margin = margin(0.3, 0.3, 0.3, 0.3, "cm")
+  ) +
   labs(
-    color = "Duck",
-    x = "Longitude",
-    y = "Latitude",
-    title = "Mallard GPS fixes in the study region"
+    title = "Mallard duck GPS fixes, 2007–2017",
+    subtitle = "Each color is one individual duck; lines show movement paths"
   )
 ```

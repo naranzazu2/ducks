@@ -1,0 +1,17 @@
+project:
+  type: website
+
+website:
+  title: "Mallard Duck Movement"
+  navbar:
+    left:
+      - href: analysis.qmd
+        text: Home
+      - href: map.qmd
+        text: Map
+      - href: seasons.qmd
+        text: Seasons
+
+format:
+  html:
+    theme: cosmo

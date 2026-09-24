@@ -14,20 +14,40 @@ library(sf)
 
 ```{r}
 #| cache: true
+#| message: false
 mallards <- readRDS("data/mallards.rds")
 ```
 
+Mallard ducks are a familiar and highly adaptable waterfowl species found across Europe and beyond. Their movements often reflect both local habitat use and long-distance seasonal travel, making them useful subjects for studying how animals respond to changing environments.
+
+Lake Constance, on the border of Germany, Switzerland, and Austria, is one of the largest freshwater lakes in Central Europe. It provides rich feeding and resting habitats for migratory birds, including mallards that move through the region during different parts of the year.
+
+The GPS tracking data used here reveals where these ducks travel, how often they are recorded, and how their movement patterns vary across space and time. By mapping and summarizing these observations, we can better understand how mallards use the lake and surrounding landscapes throughout the annual cycle.
+
+<div style="display: flex; justify-content: center;">
+  <img src="images/mallard.jpg" style="height: 300px; width: auto;"/>
+</div>
+
 ```{r}
+#| message: false
+#| echo: false
+#| results: hide
 mallards |>
   head(10)
 ```
 
 ```{r}
+#| message: false
+#| echo: false
+#| results: hide
 mallards |>
   count(duck_id, sort = TRUE)
 ```
 
 ```{r}
+#| message: false
+#| echo: false
+#| results: hide
 mallards |>
   summarize(
     min_lat = min(lat, na.rm = TRUE),

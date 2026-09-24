@@ -14,16 +14,24 @@ library(sf)
 
 ```{r}
 #| cache: true
+#| message: false
+#| echo: false
 mallards <- readRDS("data/mallards.rds")
 ```
 
 ```{r}
+#| message: false
+#| echo: false
+#| results: hide
 mallards |>
   mutate(month = lubridate::month(timestamp, label = TRUE, abbr = TRUE)) |>
   count(month, sort = TRUE)
 ```
 
 ```{r}
+#| message: false
+#| echo: false
+#| results: hide
 mallards |>
   filter(speed <= 30) |>
   mutate(
