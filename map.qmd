@@ -1,0 +1,37 @@
+---
+title: "Mallard Duck Movement"
+format: html
+author: Nicolas
+execute:
+  echo: false
+---
+
+```{r}
+#| message: false
+library(tidyverse)
+library(sf)
+```
+
+```{r}
+#| cache: true
+mallards <- readRDS("data/mallards.rds")
+```
+
+```{r}
+#| message: false
+world <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf")
+
+mallards |>
+  filter(lat >= 46, lat <= 55, long >= 7, long <= 25) |>
+  ggplot() +
+  geom_sf(data = world, fill = "lightgray", color = "gray50") +
+  geom_sf(aes(color = duck_id), size = 0.6, alpha = 0.7) +
+  coord_sf(xlim = c(7, 25), ylim = c(46, 55)) +
+  theme_minimal() +
+  labs(
+    color = "Duck",
+    x = "Longitude",
+    y = "Latitude",
+    title = "Mallard GPS fixes in the study region"
+  )
+```
